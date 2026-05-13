@@ -1,5 +1,13 @@
 name: Build Geode Mod
 
+uses: geode-sdk/build-geode-mod@main
+        with:
+          bindings: geode-sdk/bindings
+          bindings-ref: main
+          combine: true
+          target: ${{ matrix.config.target }}
+          sdk: "5.7.1"
+
 on:
   workflow_dispatch:
   push:
