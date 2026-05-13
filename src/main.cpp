@@ -22,11 +22,11 @@ class $modify(EditUI, EditorUI) {
                 this->selectObject(properties, true);
                 m_copyValuesBtn->activate();
             }
-            this->updateGridNodeSize(); // workaround to getting the correct gridsize
+            this->updateGridNodeSize();
             float gridSize = m_gridSize;
             
             this->selectObjects(selectedObjs, true);
-            m_trashBtn->activate(); // workaround to make undo work and not crash
+            m_trashBtn->activate();
             
             std::vector<CCPoint> points;
           
@@ -43,7 +43,7 @@ class $modify(EditUI, EditorUI) {
 
             int id = (Mod::get()->getSettingValue<bool>("use-obj-2") ? obj2 : obj1)->m_objectID;
             auto editorLayer = LevelEditorLayer::get();
-            CCArray objs;
+            auto objs = CCArray::create();
             
             for (const auto& point : points) {
                 auto obj = editorLayer->createObject(id, point, false);
@@ -51,7 +51,6 @@ class $modify(EditUI, EditorUI) {
                 if (Mod::get()->getSettingValue<bool>("copy-values")) {
                     
                     if (Mod::get()->getSettingValue<bool>("dont-use-workaround")) {
-                        // add some easy to get values
                         obj->setScaleX(properties->m_scaleX);
                         obj->setScaleY(properties->m_scaleY);
                         obj->setRotation(properties->getObjectRotation());
@@ -71,12 +70,12 @@ class $modify(EditUI, EditorUI) {
                     }
                 }
                 
-                objs.addObject(obj);
+                objs->addObject(obj);
             }     
             
             this->deselectAll();
             if (Mod::get()->getSettingValue<bool>("select-on-fill")) {
-                this->selectObjects(&objs, true);
+                this->selectObjects(objs, true);
             }
             this->updateButtons();
         }
@@ -84,11 +83,11 @@ class $modify(EditUI, EditorUI) {
     }  
     
     void createMoveMenu() {
-		EditorUI::createMoveMenu();
+        EditorUI::createMoveMenu();
         auto* btn = this->getSpriteButton("Sheet.png"_spr, menu_selector(EditUI::quickFill), nullptr, 1);
         m_editButtonBar->m_buttonArray->addObject(btn);
         auto rows = GameManager::sharedState()->getIntGameVariable("0049");
         auto cols = GameManager::sharedState()->getIntGameVariable("0050");
         m_editButtonBar->reloadItems(rows, cols);
-	}
+    }
 };
